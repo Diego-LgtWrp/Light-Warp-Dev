@@ -23,40 +23,12 @@ Add instructions here
 .
 ├── CHANGELOG.md
 ├── PIPELINE
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── LIGHTING
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── EFFECTS
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── CFX
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── LOOK
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── ANIM
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── MISC
-│   ├── BLEND
-│   ├── UNREAL
-│   ├── HDA
-│   ├── SCRIPTS
 ├── .github
 ├── .gitignore
 └── README.md
