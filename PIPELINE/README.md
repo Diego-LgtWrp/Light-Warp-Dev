@@ -15,4 +15,5 @@
     I might make it so that one button moves the file, and they toggle an option to copy. A second button checks and validates separately.
     *  Paper trail text file is great, but if you move a .txt file, it doesn't generate, so maybe generate as "[filename]_log.txt"
     *  Allowing a user to add comments might be nice as well?
-    *  
+    *  End goal would probs have something this foundational run in C++ for speed and to limit weight on machines for larger files
+    *  Should this support batching files?
