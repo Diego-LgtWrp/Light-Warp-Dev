@@ -35,6 +35,7 @@ from lightwarp.folders import (
     ensure_existing_dir,
     raise_exists,
 )
+from lightwarp.naming import format_version
 from lightwarp.util import log_to_project
 
 TOOL_NAME = "proj_folders"
@@ -61,10 +62,10 @@ def _copy_asset_template(
     asset_root: Path, asset_name: str, template_path: Path,
     subfolder: str, extension: str,
 ) -> Path:
-    """Copy template to asset_root/subfolder/[asset_name].extension."""
+    """Copy template to asset_root/subfolder/[asset_name]_v001.extension."""
     dest_dir = asset_root / subfolder
     dest_dir.mkdir(parents=True, exist_ok=True)
-    dest = dest_dir / f"{asset_name}{extension}"
+    dest = dest_dir / format_version(asset_name, 1, extension)
     if not template_path.is_file():
         raise FileNotFoundError(
             f"Template not found: {template_path}\n"

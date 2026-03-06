@@ -22,6 +22,7 @@ from config.structures import (
     ASSET_TYPES,
 )
 from config.templates import TEMPLATE_MAPPINGS
+from config.naming import VERSION_PADDING, VERSION_PREFIX, VERSION_SEPARATOR
 
 DRIVE_ROOT = _env.DRIVE_ROOT
 PROJECTS_DIR = _env.PROJECTS_DIR
@@ -50,6 +51,9 @@ try:
     RENDER_STRUCTURE = getattr(_local, "RENDER_STRUCTURE", RENDER_STRUCTURE)
     TEMPLATE_MAPPINGS = getattr(_local, "TEMPLATE_MAPPINGS", TEMPLATE_MAPPINGS)
     ASSET_TYPES = getattr(_local, "ASSET_TYPES", ASSET_TYPES)
+    VERSION_PREFIX = getattr(_local, "VERSION_PREFIX", VERSION_PREFIX)
+    VERSION_SEPARATOR = getattr(_local, "VERSION_SEPARATOR", VERSION_SEPARATOR)
+    VERSION_PADDING = getattr(_local, "VERSION_PADDING", VERSION_PADDING)
     del _local, _drive_override
 except ImportError:
     pass

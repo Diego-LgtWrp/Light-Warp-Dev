@@ -93,3 +93,17 @@ from lightwarp.navigate import (  # noqa: F401 — re-export
     render_path,
     shot_path,
 )
+
+# ---------------------------------------------------------------------------
+# Naming and versioning
+# ---------------------------------------------------------------------------
+from lightwarp.naming import (  # noqa: F401 — re-export
+    format_version,
+    latest_version_number,
+    latest_version_path,
+    list_versions,
+    next_version_path,
+    parse_version,
+    save_next_version,
+    version_path,
+)

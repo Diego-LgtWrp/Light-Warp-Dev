@@ -39,3 +39,12 @@ from pathlib import Path
 #     "blend": {"filename": "template.blend", "subfolder": "blend", "extension": ".blend"},
 #     "substance": {"filename": "template.spp", "subfolder": "substance", "extension": ".spp"},
 # }
+
+# ---------------------------------------------------------------------------
+# Versioning (controls how versioned filenames are built and parsed).
+# Default: char_hero_v001.blend  (separator="_", prefix="v", padding=3)
+# ---------------------------------------------------------------------------
+
+# VERSION_PREFIX = "v"
+# VERSION_SEPARATOR = "_"
+# VERSION_PADDING = 3
