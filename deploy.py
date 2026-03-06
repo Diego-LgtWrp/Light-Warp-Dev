@@ -48,18 +48,34 @@ def _get_tracked_files() -> set[str]:
     return set(_git_ok("ls-files").stdout.strip().splitlines())
 
 
-def _is_gitignored(paths: list[str]) -> set[str]:
-    """Return the subset of *paths* that the repo's .gitignore would match."""
-    if not paths:
-        return set()
-    r = subprocess.run(
-        ["git", "check-ignore", "--stdin"],
-        cwd=REPO_DIR,
-        input="\n".join(paths),
-        capture_output=True,
-        text=True,
-    )
-    return set(r.stdout.strip().splitlines()) if r.stdout.strip() else set()
+_PRESERVE_DIRS = frozenset({
+    "__pycache__", ".venv", "venv", "env",
+    ".vscode", ".idea", "dist", "build",
+})
+_PRESERVE_FILES = frozenset({
+    ".DS_Store", "Thumbs.db", "desktop.ini",
+})
+_PRESERVE_EXTENSIONS = frozenset({
+    ".pyc", ".pyo", ".pyd", ".egg", ".swp", ".swo",
+})
+_PRESERVE_PATHS = frozenset({
+    "config/local.py",
+})
+
+
+def _should_preserve(rel_posix: str) -> bool:
+    """True if a Drive-only file should be left alone (runtime artifact, etc.)."""
+    p = Path(rel_posix)
+    if rel_posix in _PRESERVE_PATHS:
+        return True
+    if p.name in _PRESERVE_FILES:
+        return True
+    if p.suffix in _PRESERVE_EXTENSIONS:
+        return True
+    for part in p.parts:
+        if part in _PRESERVE_DIRS or part.endswith(".egg-info"):
+            return True
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -204,8 +220,7 @@ def main() -> None:
             unchanged.append(f)
 
     extra = sorted(drive_files - tracked)
-    ignored = _is_gitignored(extra)
-    to_remove = [f for f in extra if f not in ignored]
+    to_remove = [f for f in extra if not _should_preserve(f)]
 
     # ---- Summary ----------------------------------------------------------
     print()
