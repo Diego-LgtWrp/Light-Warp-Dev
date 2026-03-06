@@ -1,0 +1,41 @@
+# config/local.py — machine-specific overrides
+#
+# Copy this file to local.py (same folder) and uncomment/edit
+# the values you want to change.  local.py is gitignored so each
+# artist can have different settings without touching shared files.
+#
+# TIP: Run  python setup_local.py  from the pipeline/ directory to
+#      generate this file automatically.
+#
+# Path overrides use pathlib.Path objects.
+
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Drive root (only needed when running from a local clone, NOT from the
+# shared Google Drive).  Setting DRIVE_ROOT re-derives every path below it
+# automatically — you only need individual overrides if you want something
+# non-standard.
+#
+# Windows example:
+# DRIVE_ROOT = Path("G:/Shared drives/LightWarp_Test")
+#
+# macOS example:
+# DRIVE_ROOT = Path("/Volumes/GoogleDrive/Shared drives/LightWarp_Test")
+# ---------------------------------------------------------------------------
+
+# DRIVE_ROOT = Path("G:/Shared drives/LightWarp_Test")
+
+# ---------------------------------------------------------------------------
+# Individual path overrides (these take precedence over DRIVE_ROOT).
+# ---------------------------------------------------------------------------
+
+# PROJECTS_DIR = Path("D:/my_projects")
+# TEMPLATES_DIR = Path("D:/my_templates")
+
+# ASSET_TYPES = ["char_", "prop_", "env_", "veh_"]
+
+# TEMPLATE_MAPPINGS = {
+#     "blend": {"filename": "template.blend", "subfolder": "blend", "extension": ".blend"},
+#     "substance": {"filename": "template.spp", "subfolder": "substance", "extension": ".spp"},
+# }
