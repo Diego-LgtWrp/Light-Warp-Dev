@@ -163,6 +163,59 @@ python deploy.py --dry-run
 - The Drive copy has no `.git` directory.  Git operations only happen in
   your local clone.
 
+## Using the `lightwarp` Module
+
+The `lightwarp` package is the unified studio library.  Everything you
+need is available through a single import:
+
+```python
+import lightwarp as lw
+```
+
+### Environment paths
+
+```python
+lw.DRIVE_ROOT       # root of the shared drive
+lw.PROJECTS_DIR     # projects/ directory
+lw.TEMPLATES_DIR    # resources/templates/
+```
+
+These respect `config/local.py` overrides, so they resolve correctly on
+any machine regardless of drive letter.
+
+### Project setup
+
+```python
+lw.create_project_structure(root, "MyFilm")
+lw.create_asset_structure(project, "char_hero")
+lw.create_shot_structure(project, "sh010")
+```
+
+### Navigation
+
+```python
+lw.project_path("MyFilm")
+lw.list_projects()
+lw.list_assets("MyFilm")
+lw.list_shots("MyFilm")
+lw.open_shot("MyFilm", "sh010")
+```
+
+### Where the code lives
+
+| What | Module |
+|------|--------|
+| Path auto-detection | `lightwarp.env` |
+| Folder-spec engine | `lightwarp.folders` |
+| Project setup functions | `lightwarp.setup` |
+| Navigation and listing | `lightwarp.navigate` |
+| Utilities (logging, open) | `lightwarp.util` |
+| Settings and overrides | `config` |
+
+You can import from a specific submodule (e.g. `from lightwarp.navigate
+import list_shots`), but `import lightwarp as lw` re-exports everything
+for convenience.
+
 ## Quick Reference
 
 | Task | Command |

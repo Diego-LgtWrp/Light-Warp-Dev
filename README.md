@@ -21,11 +21,16 @@ Pipeline code is tracked in Git and hosted on GitHub.  Production data and large
 
 ```
 pipeline/
-  lightwarp/            Shared Python package (env, folders engine, utilities + logging)
+  lightwarp/            Core studio library  (import lightwarp as lw)
+    env.py                Auto-detected drive paths
+    folders.py            Generic folder-spec engine
+    setup.py              Project/asset/shot creation and updates
+    navigate.py           Path resolution, listing, and open-in-browser
+    util.py               Cross-platform helpers (logging, open_folder)
   config/               Pipeline-wide settings (folder structures, templates, asset types)
-  tools/                End-user tools
-    proj_folders/         Project/asset/shot folder creator (GUI + CLI)
-    secure_transfer/      File copy & SHA-256 validation (GUI, requires customtkinter)
+  tools/                End-user tools (GUI + CLI entry points)
+    proj_folders/         Project/asset/shot folder creator
+    secure_transfer/      File copy & SHA-256 validation (requires customtkinter)
   hosts/                DCC-specific integrations (stubs for now)
     blender/              Blender operators, menus, startup hooks
     unreal/               Unreal Editor utilities and Python bindings
@@ -124,15 +129,45 @@ DRIVE_ROOT = Path("G:/Shared drives/LightWarp_Test")
 
 Individual path overrides (`PROJECTS_DIR`, `TEMPLATES_DIR`, etc.) still take precedence if set.
 
-## Environment
+## The `lightwarp` Module
 
-`lightwarp/env.py` auto-detects the drive layout based on its own file path:
+`lightwarp` is the unified studio library.  A single import gives you environment paths, project setup, and navigation:
 
 ```python
-from config import DRIVE_ROOT, PROJECTS_DIR, RESOURCES_DIR, TEMPLATES_DIR
+import lightwarp as lw
+
+# Environment paths (respects config/local.py overrides)
+lw.DRIVE_ROOT
+lw.PROJECTS_DIR
+lw.TEMPLATES_DIR
+
+# Create project structures
+lw.create_project_structure(root, "MyFilm")
+lw.create_asset_structure(project, "char_hero", create_blend_file=True)
+lw.create_shot_structure(project, "sh010")
+
+# Navigate the pipeline
+lw.project_path("MyFilm")          # -> Path to project root
+lw.asset_path("MyFilm", "char_hero")
+lw.shot_path("MyFilm", "sh010")
+lw.render_path("MyFilm", "sh010")
+
+# List contents
+lw.list_projects()                  # -> ["MyFilm", "OtherProject"]
+lw.list_assets("MyFilm")           # -> ["char_hero", "prop_sword"]
+lw.list_shots("MyFilm")            # -> ["sh010", "sh020"]
+
+# Open in file browser
+lw.open_project("MyFilm")
+lw.open_shot("MyFilm", "sh010")
+lw.open_render("MyFilm", "sh010")
+
+# Utilities
+lw.open_folder(some_path)
+lw.log_to_project(root, "tool", "message")
 ```
 
-Always import paths from `config` (not `lightwarp.env` directly) to get values that respect `config/local.py` overrides.
+All path functions resolve correctly regardless of drive letter, whether you are working on the shared Google Drive or from a local clone with a `config/local.py` override.
 
 ## Deploying to the Shared Drive
 

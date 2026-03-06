@@ -1,18 +1,48 @@
 """
-LightWarp pipeline — shared Python package for all pipeline tools and DCC hosts.
+LightWarp pipeline — one-stop import for studio environment, project setup,
+and pipeline navigation.
 
-NOTE: The path constants re-exported below (DRIVE_ROOT, PROJECTS_DIR, etc.)
-are the auto-detected defaults from ``lightwarp.env``.  For values that
-respect per-machine overrides from ``config/local.py``, import from
-``config`` instead::
+Usage::
 
-    from config import PROJECTS_DIR  # uses local.py overrides
+    import lightwarp as lw
+
+    # Environment paths (respects config/local.py overrides)
+    lw.DRIVE_ROOT
+    lw.PROJECTS_DIR
+
+    # Project setup
+    lw.create_project_structure(root, "MyFilm")
+    lw.create_asset_structure(project, "char_hero")
+
+    # Navigation
+    lw.project_path("MyFilm")
+    lw.list_projects()
+    lw.open_shot("MyFilm", "sh010")
+
+    # Utilities
+    lw.open_folder(some_path)
+    lw.log_to_project(root, "tool", "message")
 """
 
 __version__ = "0.1.0"
 
-from lightwarp.env import DRIVE_ROOT, PROJECTS_DIR, RESOURCES_DIR, SOFTWARE_DIR, TEMPLATES_DIR
-from lightwarp.folders import (
+# ---------------------------------------------------------------------------
+# Environment paths — imported from config so local.py overrides are applied.
+# config/__init__.py imports from lightwarp.env (a submodule), so there is
+# no circular dependency.
+# ---------------------------------------------------------------------------
+from config import (  # noqa: F401 — re-export
+    DRIVE_ROOT,
+    PROJECTS_DIR,
+    RESOURCES_DIR,
+    SOFTWARE_DIR,
+    TEMPLATES_DIR,
+)
+
+# ---------------------------------------------------------------------------
+# Folder-spec engine
+# ---------------------------------------------------------------------------
+from lightwarp.folders import (  # noqa: F401 — re-export
     FolderSpec,
     PipelineNoChangesError,
     PipelinePathExistsError,
@@ -21,4 +51,45 @@ from lightwarp.folders import (
     ensure_existing_dir,
     raise_exists,
 )
-from lightwarp.util import log_to_project, open_folder
+
+# ---------------------------------------------------------------------------
+# Utilities
+# ---------------------------------------------------------------------------
+from lightwarp.util import log_to_project, open_folder  # noqa: F401
+
+# ---------------------------------------------------------------------------
+# Project setup (create / update / preview)
+# ---------------------------------------------------------------------------
+from lightwarp.setup import (  # noqa: F401 — re-export
+    create_asset_structure,
+    create_project,
+    create_project_structure,
+    create_shot_structure,
+    get_default_projects_root,
+    preview_asset_structure,
+    preview_project_structure,
+    preview_shot_structure,
+    preview_update_asset_structure,
+    preview_update_project_structure,
+    preview_update_shot_structure,
+    update_asset_structure,
+    update_project_structure,
+    update_shot_structure,
+)
+
+# ---------------------------------------------------------------------------
+# Navigation (path resolvers, listing, open-in-browser)
+# ---------------------------------------------------------------------------
+from lightwarp.navigate import (  # noqa: F401 — re-export
+    asset_path,
+    list_assets,
+    list_projects,
+    list_shots,
+    open_asset,
+    open_project,
+    open_render,
+    open_shot,
+    project_path,
+    render_path,
+    shot_path,
+)
