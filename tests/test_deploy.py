@@ -65,6 +65,21 @@ class TestShouldPreserve(unittest.TestCase):
     def test_build_directory(self):
         self.assertTrue(_should_preserve("build/lib/lightwarp/__init__.py"))
 
+    def test_utils_tools_preserved(self):
+        self.assertTrue(_should_preserve("utils/tools/proj_folders/core.py"))
+
+    def test_utils_tools_nested_preserved(self):
+        self.assertTrue(_should_preserve("utils/tools/secure_transfer/gui.py"))
+
+    def test_software_plugins_preserved(self):
+        self.assertTrue(_should_preserve("software/plugins/blender/startup.py"))
+
+    def test_software_templates_preserved(self):
+        self.assertTrue(_should_preserve("software/templates/blender/template.blend"))
+
+    def test_utils_dev_not_preserved(self):
+        self.assertFalse(_should_preserve("utils/dev/proj_folders/core.py"))
+
     def test_tracked_python_file_not_preserved(self):
         self.assertFalse(_should_preserve("lightwarp/env.py"))
 

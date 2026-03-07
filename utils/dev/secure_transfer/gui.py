@@ -3,7 +3,7 @@ import sys
 import datetime
 import customtkinter as ctk
 from tkinter import filedialog
-from utils.dev.secure_transfer import core
+from . import core
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")

@@ -61,6 +61,11 @@ _PRESERVE_EXTENSIONS = frozenset({
 _PRESERVE_PATHS = frozenset({
     "lightwarp/config/local.py",
 })
+_PRESERVE_SUBTREES = frozenset({
+    "utils/tools/",
+    "software/plugins/",
+    "software/templates/",
+})
 
 
 def _should_preserve(rel_posix: str) -> bool:
@@ -74,6 +79,9 @@ def _should_preserve(rel_posix: str) -> bool:
         return True
     for part in p.parts:
         if part in _PRESERVE_DIRS or part.endswith(".egg-info"):
+            return True
+    for prefix in _PRESERVE_SUBTREES:
+        if rel_posix.startswith(prefix):
             return True
     return False
 

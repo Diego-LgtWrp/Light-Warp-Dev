@@ -4,4 +4,4 @@
 #   .\proj_folders_cli.ps1 asset MyFilm char_hero --blend
 $PipelineRoot = (Resolve-Path (Join-Path $PSScriptRoot ".." "..")).Path
 $env:PYTHONPATH = "$PipelineRoot;$env:PYTHONPATH"
-python -m utils.dev.proj_folders.cli @args
+python -m proj_folders.cli @args
