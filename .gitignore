@@ -8,7 +8,7 @@ build/
 *.egg
 
 # Per-machine config (each artist creates their own)
-config/local.py
+lightwarp/config/local.py
 
 # IDE / editor
 .vscode/

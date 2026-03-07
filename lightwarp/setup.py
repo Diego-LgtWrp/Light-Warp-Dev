@@ -3,7 +3,7 @@ Project structure builders — create, update, and preview
 project / asset / shot directory trees.
 
 This module is the canonical home for pipeline structure operations.
-``tools/proj_folders/core.py`` re-exports from here for backward
+``utils/dev/proj_folders/core.py`` re-exports from here for backward
 compatibility with the CLI and GUI entry points.
 
 Usage::
@@ -18,7 +18,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from config import (
+from lightwarp.config import (
     ASSET_STRUCTURE,
     PROJECT_STRUCTURE,
     PROJECTS_DIR,
@@ -69,7 +69,7 @@ def _copy_asset_template(
     if not template_path.is_file():
         raise FileNotFoundError(
             f"Template not found: {template_path}\n"
-            f"Check TEMPLATES_DIR in config/ or override via config/local.py."
+            f"Check TEMPLATES_DIR in lightwarp/config/ or override via lightwarp/config/local.py."
         )
     shutil.copy2(template_path, dest)
     return dest

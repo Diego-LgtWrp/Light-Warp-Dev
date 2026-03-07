@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent
-MARKER_DIRS = ("projects", "pipeline", "resources")
+MARKER_DIRS = ("projects", "pipeline", "lib")
 
 
 # ---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ _PRESERVE_EXTENSIONS = frozenset({
     ".pyc", ".pyo", ".pyd", ".egg", ".swp", ".swo",
 })
 _PRESERVE_PATHS = frozenset({
-    "config/local.py",
+    "lightwarp/config/local.py",
 })
 
 

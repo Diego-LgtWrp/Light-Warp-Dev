@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GUI to create and update pipeline folder structures (project, asset, shot).
-Uses tkinter (built-in). Run via launcher or: python -m tools.proj_folders.gui
+Uses tkinter (built-in). Run via launcher or: python -m utils.dev.proj_folders.gui
 """
 
 import sys
@@ -11,9 +11,9 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 from typing import Callable, List, Optional
 
-from config import ASSET_TYPES
+from lightwarp.config import ASSET_TYPES
 from lightwarp.util import open_folder
-from tools.proj_folders.core import (
+from utils.dev.proj_folders.core import (
     create_asset_structure,
     create_project_structure,
     create_shot_structure,

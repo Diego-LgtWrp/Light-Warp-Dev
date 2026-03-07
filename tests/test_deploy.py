@@ -21,7 +21,7 @@ class TestShouldPreserve(unittest.TestCase):
     """_should_preserve must protect runtime artifacts from deletion."""
 
     def test_pycache_directory(self):
-        self.assertTrue(_should_preserve("config/__pycache__/__init__.cpython-314.pyc"))
+        self.assertTrue(_should_preserve("lightwarp/config/__pycache__/__init__.cpython-314.pyc"))
 
     def test_pycache_at_root(self):
         self.assertTrue(_should_preserve("__pycache__/foo.cpython-311.pyc"))
@@ -33,7 +33,7 @@ class TestShouldPreserve(unittest.TestCase):
         self.assertTrue(_should_preserve("lightwarp/env.pyo"))
 
     def test_config_local_py(self):
-        self.assertTrue(_should_preserve("config/local.py"))
+        self.assertTrue(_should_preserve("lightwarp/config/local.py"))
 
     def test_venv_directory(self):
         self.assertTrue(_should_preserve(".venv/lib/site-packages/foo.py"))
@@ -57,7 +57,7 @@ class TestShouldPreserve(unittest.TestCase):
         self.assertTrue(_should_preserve("lightwarp.egg-info/PKG-INFO"))
 
     def test_swap_file(self):
-        self.assertTrue(_should_preserve("config/__init__.py.swp"))
+        self.assertTrue(_should_preserve("lightwarp/config/__init__.py.swp"))
 
     def test_dist_directory(self):
         self.assertTrue(_should_preserve("dist/lightwarp-0.1.0.tar.gz"))
@@ -72,10 +72,10 @@ class TestShouldPreserve(unittest.TestCase):
         self.assertFalse(_should_preserve("README.md"))
 
     def test_tracked_bat_not_preserved(self):
-        self.assertFalse(_should_preserve("launchers/proj_folders_gui.bat"))
+        self.assertFalse(_should_preserve("utils/launchers/proj_folders_gui.bat"))
 
     def test_nested_config_file_not_preserved(self):
-        self.assertFalse(_should_preserve("config/structures.py"))
+        self.assertFalse(_should_preserve("lightwarp/config/structures.py"))
 
 
 class TestWalkTarget(unittest.TestCase):

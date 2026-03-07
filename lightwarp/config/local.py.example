@@ -1,4 +1,4 @@
-# config/local.py — machine-specific overrides
+# lightwarp/config/local.py — machine-specific overrides
 #
 # Copy this file to local.py (same folder) and uncomment/edit
 # the values you want to change.  local.py is gitignored so each

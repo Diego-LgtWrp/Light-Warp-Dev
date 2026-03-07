@@ -1,5 +1,5 @@
 """
-Unit tests for setup_local.py — config/local.py generator.
+Unit tests for setup_local.py — lightwarp/config/local.py generator.
 
 Run from the pipeline/ directory:
     python -m pytest tests/test_setup_local.py
@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from setup_local import _is_lightwarp_root, _write_local_py
 
-# Override _LOCAL_PY for tests so we never touch the real config/local.py.
+# Override _LOCAL_PY for tests so we never touch the real lightwarp/config/local.py.
 import setup_local as _sl
 
 
@@ -22,7 +22,7 @@ class TestIsLightwarpRoot(unittest.TestCase):
     def test_returns_true_when_all_markers_present(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for d in ("projects", "pipeline", "resources"):
+            for d in ("projects", "pipeline", "lib"):
                 (root / d).mkdir()
             self.assertTrue(_is_lightwarp_root(root))
 

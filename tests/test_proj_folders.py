@@ -1,5 +1,5 @@
 """
-Unit tests for tools.proj_folders.core — project/asset/shot builders.
+Unit tests for utils.dev.proj_folders.core — project/asset/shot builders.
 
 Run from the pipeline/ directory:
     python -m pytest tests/
@@ -12,9 +12,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from config import ASSET_STRUCTURE, PROJECT_STRUCTURE, RENDER_STRUCTURE, SHOT_STRUCTURE, ASSET_TYPES
+from lightwarp.config import ASSET_STRUCTURE, PROJECT_STRUCTURE, RENDER_STRUCTURE, SHOT_STRUCTURE, ASSET_TYPES
 from lightwarp.folders import PipelineNoChangesError, PipelinePathExistsError, collect_missing_dirs
-from tools.proj_folders.core import (
+from utils.dev.proj_folders.core import (
     create_asset_structure,
     create_project_structure,
     create_shot_structure,
