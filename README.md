@@ -21,35 +21,44 @@ Pipeline code is tracked in Git and hosted on GitHub.  Production data and large
 
 ```
 pipeline/
-  lightwarp/            Core studio library  (import lightwarp as lw)
-    env.py                Auto-detected drive paths
-    folders.py            Generic folder-spec engine
-    setup.py              Project/asset/shot creation and updates
-    navigate.py           Path resolution, listing, and open-in-browser
-    util.py               Cross-platform helpers (logging, open_folder)
-  config/               Pipeline-wide settings (folder structures, templates, asset types)
-  tools/                End-user tools (GUI + CLI entry points)
-    proj_folders/         Project/asset/shot folder creator
-    secure_transfer/      File copy & SHA-256 validation (requires customtkinter)
-  hosts/                DCC-specific integrations (stubs for now)
-    blender/              Blender operators, menus, startup hooks
-    unreal/               Unreal Editor utilities and Python bindings
-    houdini/              Shelf tools, HDAs, Python panels
-    substance/            Substance Painter plugins and export presets
-    nuke/                 Gizmos, Python panels, render management
-    adobe/                After Effects, Photoshop, and other Adobe bridges
-  tests/                Unit and integration tests
-  launchers/            .bat/.ps1 scripts for artists to double-click
-  setup.py              Developer install (pip install -e .)
-  setup_local.py        Auto-generates config/local.py for local clones
-  deploy.py             Deploys the repo to the Google Drive pipeline/ directory
+  lightwarp/              Core studio library  (import lightwarp as lw)
+    env.py                  Auto-detected drive paths
+    folders.py              Generic folder-spec engine
+    setup.py                Project/asset/shot creation and updates
+    navigate.py             Path resolution, listing, and open-in-browser
+    naming.py               File versioning engine (v001, v002, ...)
+    util.py                 Cross-platform helpers (logging, open_folder)
+    config/                 Pipeline-wide settings
+      structures.py           Folder structures + asset types
+      templates.py            Template path mappings per DCC
+      naming.py               Versioning format settings
+      local.py                Per-machine overrides (gitignored)
+  utils/
+    dev/                    End-user tools — source of truth (GUI + CLI)
+      proj_folders/           Project/asset/shot folder creator
+      secure_transfer/        File copy & SHA-256 validation (requires customtkinter)
+    launchers/              .bat/.ps1 scripts for artists to double-click
+  software/
+    dev/
+      plugins/              DCC-specific integrations (stubs for now)
+        blender/              Blender operators, menus, startup hooks
+        houdini/              Shelf tools, HDAs, Python panels
+        nuke/                 Gizmos, Python panels, render management
+        substance/            Substance Painter plugins and export presets
+        adobe/                After Effects, Photoshop, and Adobe bridges
+        unreal/               Unreal Editor utilities and Python bindings
+  tests/                  Unit and integration tests
+  setup.py                Developer install (pip install -e .)
+  setup_local.py          Auto-generates lightwarp/config/local.py for local clones
+  deploy.py               Deploys the repo to the Google Drive (scoped: dev or full)
+  publish.py              Promotes dev tools/plugins/templates to production on Drive
 ```
 
 ## Quick Start
 
 ### For Artists
 
-Double-click one of the launcher scripts in `launchers/`:
+Double-click one of the launcher scripts in `utils/launchers/`:
 
 - **proj_folders_gui.bat** -- Opens the Project Folder Creator GUI
 - **proj_folders_cli.bat** -- CLI version (pass arguments after the script name)
@@ -77,8 +86,8 @@ Quick version:
 
 4. Run tools:
    ```
-   python -m tools.proj_folders.gui
-   python -m tools.proj_folders.cli project MyFilm
+   python -m utils.dev.proj_folders.gui
+   python -m utils.dev.proj_folders.cli project MyFilm
    ```
 
 5. Run the tests:
@@ -88,7 +97,9 @@ Quick version:
 
 6. When your changes are ready, deploy to the shared drive:
    ```
-   python deploy.py
+   python deploy.py                # interactive (defaults to dev scope)
+   python deploy.py --scope dev    # deploy only dev directories
+   python deploy.py --scope full   # deploy all tracked files (core pipeline)
    ```
 
 ## CLI Usage
@@ -96,31 +107,32 @@ Quick version:
 The Project Folder Creator CLI supports bare project names (resolved against PROJECTS_DIR) or full paths:
 
 ```
-python -m tools.proj_folders.cli project MyFilm
-python -m tools.proj_folders.cli project MyFilm --assets char_hero prop_sword --shots sh010 sh020
-python -m tools.proj_folders.cli asset MyFilm char_hero --blend --substance
-python -m tools.proj_folders.cli shot MyFilm sh010
-python -m tools.proj_folders.cli project-update MyFilm --dry-run
-python -m tools.proj_folders.cli asset-update MyFilm char_hero
-python -m tools.proj_folders.cli shot-update MyFilm sh010
+python -m utils.dev.proj_folders.cli project MyFilm
+python -m utils.dev.proj_folders.cli project MyFilm --assets char_hero prop_sword --shots sh010 sh020
+python -m utils.dev.proj_folders.cli asset MyFilm char_hero --blend --substance
+python -m utils.dev.proj_folders.cli shot MyFilm sh010
+python -m utils.dev.proj_folders.cli project-update MyFilm --dry-run
+python -m utils.dev.proj_folders.cli asset-update MyFilm char_hero
+python -m utils.dev.proj_folders.cli shot-update MyFilm sh010
 ```
 
 ## Configuration
 
-Pipeline-wide settings live in `config/`:
+Pipeline-wide settings live in `lightwarp/config/`:
 
 | File               | Contents                                                       |
 |--------------------|----------------------------------------------------------------|
 | `structures.py`    | Folder structures (PROJECT, ASSET, SHOT, RENDER) + asset types |
 | `templates.py`     | Template path mappings (subfolder + extension per DCC)         |
+| `naming.py`        | Versioning format (prefix, separator, padding)                 |
 
 ### Per-Machine Overrides
 
-Create `config/local.py` (gitignored) to set machine-specific values.  The easiest way is to run `python setup_local.py`, which auto-detects your Google Drive and writes the file for you.
+Create `lightwarp/config/local.py` (gitignored) to set machine-specific values.  The easiest way is to run `python setup_local.py`, which auto-detects your Google Drive and writes the file for you.
 
-You can also copy `config/local.py.example` and edit it manually.
+You can also copy `lightwarp/config/local.py.example` and edit it manually.
 
-**DRIVE_ROOT** -- If you are working from a local clone (not directly on the shared drive), set `DRIVE_ROOT` in `config/local.py` to point at the Google Drive root.  All derived paths (`PROJECTS_DIR`, `RESOURCES_DIR`, etc.) will be re-computed automatically:
+**DRIVE_ROOT** -- If you are working from a local clone (not directly on the shared drive), set `DRIVE_ROOT` in `lightwarp/config/local.py` to point at the Google Drive root.  All derived paths (`PROJECTS_DIR`, `LIB_DIR`, etc.) will be re-computed automatically:
 
 ```python
 from pathlib import Path
@@ -131,14 +143,15 @@ Individual path overrides (`PROJECTS_DIR`, `TEMPLATES_DIR`, etc.) still take pre
 
 ## The `lightwarp` Module
 
-`lightwarp` is the unified studio library.  A single import gives you environment paths, project setup, and navigation:
+`lightwarp` is the unified studio library.  A single import gives you environment paths, project setup, navigation, and versioning:
 
 ```python
 import lightwarp as lw
 
-# Environment paths (respects config/local.py overrides)
+# Environment paths (respects lightwarp/config/local.py overrides)
 lw.DRIVE_ROOT
 lw.PROJECTS_DIR
+lw.LIB_DIR
 lw.TEMPLATES_DIR
 
 # Create project structures
@@ -162,41 +175,89 @@ lw.open_project("MyFilm")
 lw.open_shot("MyFilm", "sh010")
 lw.open_render("MyFilm", "sh010")
 
+# File versioning
+lw.format_version("char_hero", 3, ".blend")   # -> "char_hero_v003.blend"
+lw.next_version_path(folder, "char_hero", ".blend")
+lw.save_next_version(source_file, folder, "char_hero")
+lw.list_versions(folder, "char_hero", ".blend")
+lw.latest_version_path(folder, "char_hero", ".blend")
+
 # Utilities
 lw.open_folder(some_path)
 lw.log_to_project(root, "tool", "message")
 ```
 
-All path functions resolve correctly regardless of drive letter, whether you are working on the shared Google Drive or from a local clone with a `config/local.py` override.
+All path functions resolve correctly regardless of drive letter, whether you are working on the shared Google Drive or from a local clone with a `lightwarp/config/local.py` override.
 
 ## Deploying to the Shared Drive
 
 `deploy.py` syncs your local clone to the Google Drive `pipeline/` directory.  It is a one-way push (repo to Drive), never the reverse.
 
+### Deployment Scopes
+
+Deploy supports two scopes to control what gets pushed:
+
+| Scope  | What it deploys                                | Who it's for       |
+|--------|------------------------------------------------|--------------------|
+| `dev`  | `utils/dev/`, `software/dev/`, `tests/` only   | Any developer      |
+| `full` | All git-tracked files (core pipeline included)  | Leads / admins     |
+
+If no `--scope` flag is passed, the script prompts you to choose.  The default is `dev`.  Choosing `full` triggers an extra confirmation warning since it modifies core pipeline files shared by all users.
+
+Certain directories on the Drive are **never** touched by deploy regardless of scope — these are managed by `publish.py` instead:
+
+- `utils/tools/` (published from `utils/dev/`)
+- `software/plugins/` (published from `software/dev/plugins/`)
+- `software/templates/` (published from `software/dev/templates/`)
+
 ```
-python deploy.py              # auto-detect Drive location
-python deploy.py --dry-run    # preview changes without applying
-python deploy.py "G:/Shared drives/LightWarp_Test"   # explicit path
+python deploy.py                                     # interactive scope selection
+python deploy.py --scope dev                         # dev directories only
+python deploy.py --scope full                        # all tracked files
+python deploy.py --dry-run                           # preview changes
+python deploy.py --dry-run --scope dev               # preview dev-only changes
+python deploy.py "G:/Shared drives/LightWarp_Test"   # explicit Drive path
 ```
 
-The script:
+The script also:
 - Pulls the latest from GitHub if you're behind
 - Copies only git-tracked files (no `.git/`, no `__pycache__/`)
-- Removes stale files from the Drive that are no longer in the repo
-- Preserves runtime artifacts (`__pycache__/`, `config/local.py`, etc.)
+- Removes stale files from the Drive that are no longer tracked (within scope)
+- Preserves runtime artifacts (`__pycache__/`, `lightwarp/config/local.py`, etc.)
 - Shows a full summary and asks for confirmation before making changes
+
+### Publishing Dev to Production
+
+After deploying dev tools to the Drive, use `publish.py` to promote them to their production locations:
+
+| Area        | Source (dev)               | Destination (production)    |
+|-------------|----------------------------|-----------------------------|
+| utils       | `pipeline/utils/dev`       | `pipeline/utils/tools`      |
+| plugins     | `pipeline/software/dev/plugins`   | `pipeline/software/plugins`  |
+| templates   | `pipeline/software/dev/templates` | `pipeline/software/templates`|
+
+```
+python publish.py                  # publish all areas
+python publish.py utils            # publish only utils
+python publish.py plugins          # publish only plugins
+python publish.py --dry-run        # preview changes
+```
+
+`publish.py` runs on the Drive (not from your local clone).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete workflow.
 
 ## Adding a New Tool
 
-1. Create a directory under `tools/` (e.g. `tools/my_tool/`).
+1. Create a directory under `utils/dev/` (e.g. `utils/dev/my_tool/`).
 2. Add `__init__.py`, `core.py`, and optionally `gui.py` / `cli.py`.
-3. Import shared utilities from `lightwarp` and settings from `config`.
-4. Add a launcher script in `launchers/`.
+3. Import shared utilities from `lightwarp` and settings from `lightwarp.config`.
+4. Add a launcher script in `utils/launchers/`.
+5. Deploy with `python deploy.py --scope dev`, then promote to production with `python publish.py utils`.
 
 ## Adding a DCC Integration
 
-1. Find the appropriate package under `hosts/` (or create one).
-2. Read the README inside each host package for setup guidance.
-3. Import from `lightwarp` and `config` as needed.
+1. Find the appropriate package under `software/dev/plugins/` (or create one).
+2. Read the README inside each plugin package for setup guidance.
+3. Import from `lightwarp` and `lightwarp.config` as needed.
+4. Deploy with `python deploy.py --scope dev`, then promote with `python publish.py plugins`.

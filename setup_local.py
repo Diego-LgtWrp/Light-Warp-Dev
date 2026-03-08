@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate config/local.py with the correct DRIVE_ROOT for this machine.
+Generate lightwarp/config/local.py with the correct DRIVE_ROOT for this machine.
 
 Run from the pipeline/ directory:
     python setup_local.py            # auto-detect or folder picker

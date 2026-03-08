@@ -1,12 +1,12 @@
 """
 LightWarp pipeline — one-stop import for studio environment, project setup,
-and pipeline navigation.
+pipeline navigation, and file versioning.
 
 Usage::
 
     import lightwarp as lw
 
-    # Environment paths (respects config/local.py overrides)
+    # Environment paths (respects lightwarp/config/local.py overrides)
     lw.DRIVE_ROOT
     lw.PROJECTS_DIR
 
@@ -18,6 +18,11 @@ Usage::
     lw.project_path("MyFilm")
     lw.list_projects()
     lw.open_shot("MyFilm", "sh010")
+
+    # Versioning
+    lw.format_version("char_hero", 3, ".blend")  # -> "char_hero_v003.blend"
+    lw.next_version_path(folder, "char_hero", ".blend")
+    lw.save_next_version(source_file, folder, "char_hero")
 
     # Utilities
     lw.open_folder(some_path)

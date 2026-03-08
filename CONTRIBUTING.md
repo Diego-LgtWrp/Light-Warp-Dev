@@ -5,7 +5,7 @@ This guide covers everything you need to start developing on the pipeline.
 ## Prerequisites
 
 - **Git** -- Install [Git for Windows](https://git-scm.com/) (includes Git Bash)
-- **Python 3.9+** -- Any recent Python version
+- **Python 3.8+** -- Any recent Python version
 - **GitHub account** -- Sign up at [github.com](https://github.com) (free)
 - **Google Drive for Desktop** -- So your machine can access the shared drive
 
@@ -33,9 +33,9 @@ you need to tell the pipeline where the drive is:
 python setup_local.py
 ```
 
-This auto-detects the LightWarp shared drive and creates `config/local.py`
-with the correct `DRIVE_ROOT`.  If auto-detection fails, you can provide
-the path directly:
+This auto-detects the LightWarp shared drive and creates
+`lightwarp/config/local.py` with the correct `DRIVE_ROOT`.  If
+auto-detection fails, you can provide the path directly:
 
 ```bash
 python setup_local.py "G:/Shared drives/LightWarp_Test"
@@ -53,7 +53,7 @@ pip install -e .
 ### 4. Verify everything works
 
 ```bash
-python -m tools.proj_folders.gui
+python -m utils.dev.proj_folders.gui
 python -m pytest tests/
 ```
 
@@ -145,21 +145,49 @@ The deploy script will:
 
 1. Check that your local `main` is up to date with GitHub.
 2. Offer to pull if you're behind.
-3. Show a summary of files to add, update, and remove.
-4. Ask for confirmation before making any changes.
+3. Ask you to select a deployment scope (`dev` or `full`).
+4. Show a summary of files to add, update, and remove.
+5. Ask for confirmation before making any changes.
 
-You can preview what would happen without applying anything:
+### Deployment scopes
+
+| Scope  | What it deploys                                | Who it's for       |
+|--------|------------------------------------------------|--------------------|
+| `dev`  | `utils/dev/`, `software/dev/`, `tests/` only   | Any developer      |
+| `full` | All git-tracked files (core pipeline included)  | Leads / admins     |
+
+Most developers should use `dev` scope (the default).  The `full` scope
+modifies core pipeline code (`lightwarp/`, launchers, top-level scripts)
+and requires an extra confirmation.
 
 ```bash
-python deploy.py --dry-run
+python deploy.py --scope dev       # deploy dev directories only
+python deploy.py --scope full      # deploy everything (extra confirmation)
+python deploy.py --dry-run         # preview without applying
 ```
+
+### Publishing dev to production
+
+After deploying dev content, promote it to its production location on the
+Drive using `publish.py`:
+
+```bash
+python publish.py                  # publish all areas (utils, plugins, templates)
+python publish.py utils            # publish utils only
+python publish.py --dry-run        # preview
+```
+
+This copies `utils/dev/` to `utils/tools/`, `software/dev/plugins/` to
+`software/plugins/`, and `software/dev/templates/` to `software/templates/`.
 
 **Important notes:**
 
 - Only deploy from the `main` branch to keep the Drive copy stable.
-- Anyone on the team can run the deploy -- it's safe and idempotent.
-- The script never touches `__pycache__/`, `config/local.py`, or other
-  runtime artifacts on the Drive.
+- Anyone on the team can run a `dev` deploy -- it's safe and scoped.
+- The script never touches `__pycache__/`, `lightwarp/config/local.py`, or
+  other runtime artifacts on the Drive.
+- Directories managed by `publish.py` (`utils/tools/`, `software/plugins/`,
+  `software/templates/`) are never modified by `deploy.py`.
 - The Drive copy has no `.git` directory.  Git operations only happen in
   your local clone.
 
@@ -177,11 +205,12 @@ import lightwarp as lw
 ```python
 lw.DRIVE_ROOT       # root of the shared drive
 lw.PROJECTS_DIR     # projects/ directory
-lw.TEMPLATES_DIR    # resources/templates/
+lw.LIB_DIR          # lib/ directory
+lw.TEMPLATES_DIR    # software/templates/
 ```
 
-These respect `config/local.py` overrides, so they resolve correctly on
-any machine regardless of drive letter.
+These respect `lightwarp/config/local.py` overrides, so they resolve
+correctly on any machine regardless of drive letter.
 
 ### Project setup
 
@@ -209,8 +238,9 @@ lw.open_shot("MyFilm", "sh010")
 | Folder-spec engine | `lightwarp.folders` |
 | Project setup functions | `lightwarp.setup` |
 | Navigation and listing | `lightwarp.navigate` |
+| File versioning | `lightwarp.naming` |
 | Utilities (logging, open) | `lightwarp.util` |
-| Settings and overrides | `config` |
+| Settings and overrides | `lightwarp.config` |
 
 You can import from a specific submodule (e.g. `from lightwarp.navigate
 import list_shots`), but `import lightwarp as lw` re-exports everything
@@ -228,6 +258,9 @@ for convenience.
 | Push a branch | `git push -u origin feature/my-change` |
 | Switch to main | `git checkout main` |
 | Run tests | `python -m pytest tests/` |
-| Deploy to Drive | `python deploy.py` |
+| Deploy (dev scope) | `python deploy.py --scope dev` |
+| Deploy (full scope) | `python deploy.py --scope full` |
 | Deploy dry run | `python deploy.py --dry-run` |
+| Publish dev to production | `python publish.py` |
+| Publish dry run | `python publish.py --dry-run` |
 | Re-generate local config | `python setup_local.py` |

@@ -1,8 +1,8 @@
 """
 Pipeline navigation — resolve paths, list contents, and open folders.
 
-All path functions use the overridden PROJECTS_DIR from ``config``, so they
-resolve correctly regardless of drive letter or local-clone setup.
+All path functions use the overridden PROJECTS_DIR from ``lightwarp.config``,
+so they resolve correctly regardless of drive letter or local-clone setup.
 
 Usage::
 

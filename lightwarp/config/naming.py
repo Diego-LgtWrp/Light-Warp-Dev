@@ -1,7 +1,7 @@
 """Naming and versioning conventions for pipeline files.
 
 These settings control how versioned filenames are generated and parsed
-across the entire pipeline.  Override any value in config/local.py.
+across the entire pipeline.  Override any value in lightwarp/config/local.py.
 
 A versioned filename looks like:
 
