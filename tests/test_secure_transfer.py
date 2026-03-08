@@ -1,5 +1,5 @@
 """
-Unit tests for tools.secure_transfer.core — file copy and SHA-256 validation.
+Unit tests for utils.dev.secure_transfer.core — file copy and SHA-256 validation.
 
 Run from the pipeline/ directory:
     python -m pytest tests/test_secure_transfer.py
@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from tools.secure_transfer.core import BUFFER_SIZE, copy_file, hash_file, validate_files
+from utils.dev.secure_transfer.core import BUFFER_SIZE, copy_file, hash_file, validate_files
 
 SAMPLE_DATA = b"LightWarp pipeline test content\n" * 100
 

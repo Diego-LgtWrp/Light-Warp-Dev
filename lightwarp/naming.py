@@ -3,7 +3,7 @@ File naming and versioning engine.
 
 Provides helpers to parse, format, discover, and create versioned
 pipeline files.  All functions respect the naming settings in
-``config/naming.py`` (overridable via ``config/local.py``).
+``lightwarp/config/naming.py`` (overridable via ``lightwarp/config/local.py``).
 
 Quick reference::
 
@@ -36,7 +36,7 @@ from typing import List, Optional, Tuple
 
 def _cfg() -> Tuple[str, str, int]:
     """Return (prefix, separator, padding) from config, late-imported."""
-    from config import VERSION_PREFIX, VERSION_SEPARATOR, VERSION_PADDING
+    from lightwarp.config import VERSION_PREFIX, VERSION_SEPARATOR, VERSION_PADDING
     return VERSION_PREFIX, VERSION_SEPARATOR, VERSION_PADDING
 
 

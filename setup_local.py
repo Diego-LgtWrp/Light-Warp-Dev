@@ -14,10 +14,10 @@ import sys
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_CONFIG_DIR = _SCRIPT_DIR / "config"
+_CONFIG_DIR = _SCRIPT_DIR / "lightwarp" / "config"
 _LOCAL_PY = _CONFIG_DIR / "local.py"
 
-MARKER_DIRS = ("projects", "pipeline", "resources")
+MARKER_DIRS = ("projects", "pipeline", "lib")
 
 
 def _is_lightwarp_root(path: Path) -> bool:
@@ -94,7 +94,7 @@ def _write_local_py(drive_root: Path) -> None:
 
 def main() -> None:
     if _LOCAL_PY.exists():
-        print(f"config/local.py already exists:  {_LOCAL_PY}")
+        print(f"lightwarp/config/local.py already exists:  {_LOCAL_PY}")
         answer = input("Overwrite? [y/N] ").strip().lower()
         if answer != "y":
             print("Aborted.")
@@ -103,7 +103,7 @@ def main() -> None:
     if _already_on_drive():
         print(
             "This script is running from the shared drive — no DRIVE_ROOT\n"
-            "override is needed.  config/local.py was NOT created."
+            "override is needed.  lightwarp/config/local.py was NOT created."
         )
         return
 

@@ -6,9 +6,11 @@ One-way sync: git repo -> Drive.  No git operations on the Drive.
 Only git-tracked files are copied; stale files are cleaned up.
 
 Usage:
-    python deploy.py                                        # auto-detect
+    python deploy.py                                        # interactive
     python deploy.py "G:/Shared drives/LightWarp_Test"      # explicit path
     python deploy.py --dry-run                               # preview only
+    python deploy.py --scope dev                             # dev dirs only
+    python deploy.py --scope full                            # all tracked files
 """
 
 from __future__ import annotations
@@ -21,7 +23,7 @@ import sys
 from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent
-MARKER_DIRS = ("projects", "pipeline", "resources")
+MARKER_DIRS = ("projects", "pipeline", "lib")
 
 
 # ---------------------------------------------------------------------------
@@ -59,8 +61,44 @@ _PRESERVE_EXTENSIONS = frozenset({
     ".pyc", ".pyo", ".pyd", ".egg", ".swp", ".swo",
 })
 _PRESERVE_PATHS = frozenset({
-    "config/local.py",
+    "lightwarp/config/local.py",
 })
+_PRESERVE_SUBTREES = frozenset({
+    "utils/tools/",
+    "software/plugins/",
+    "software/templates/",
+})
+
+
+# ---------------------------------------------------------------------------
+# Deployment scope
+# ---------------------------------------------------------------------------
+
+# Paths that deploy should NEVER write to or remove from, regardless of
+# scope.  These are managed by other processes (e.g. publish.py).
+_NEVER_DEPLOY_PREFIXES = frozenset({
+    "utils/tools/",
+    "software/plugins/",
+    "software/templates/",
+})
+
+# Prefixes a "dev" deployment is allowed to touch.  Everything else is
+# off-limits unless deploying in "full" scope.
+_DEV_SCOPE_PREFIXES = (
+    "utils/dev/",
+    "software/dev/",
+    "tests/",
+)
+
+
+def _in_scope(rel_posix: str, scope: str) -> bool:
+    """Return True if *rel_posix* is deployable under the given *scope*."""
+    for prefix in _NEVER_DEPLOY_PREFIXES:
+        if rel_posix.startswith(prefix):
+            return False
+    if scope == "full":
+        return True
+    return any(rel_posix.startswith(p) for p in _DEV_SCOPE_PREFIXES)
 
 
 def _should_preserve(rel_posix: str) -> bool:
@@ -74,6 +112,9 @@ def _should_preserve(rel_posix: str) -> bool:
         return True
     for part in p.parts:
         if part in _PRESERVE_DIRS or part.endswith(".egg-info"):
+            return True
+    for prefix in _PRESERVE_SUBTREES:
+        if rel_posix.startswith(prefix):
             return True
     return False
 
@@ -146,6 +187,19 @@ def main() -> None:
     dry_run = "--dry-run" in args
     args = [a for a in args if a != "--dry-run"]
 
+    scope: str | None = None
+    if "--scope" in args:
+        idx = args.index("--scope")
+        if idx + 1 < len(args):
+            scope = args[idx + 1].lower()
+            if scope not in ("dev", "full"):
+                print(f"ERROR: Invalid scope '{scope}'. Use 'dev' or 'full'.")
+                sys.exit(1)
+            args = args[:idx] + args[idx + 2:]
+        else:
+            print("ERROR: --scope requires a value ('dev' or 'full').")
+            sys.exit(1)
+
     # ---- Resolve Drive target ---------------------------------------------
     if args:
         drive_root = Path(args[0]).resolve()
@@ -194,14 +248,38 @@ def main() -> None:
                 commit = _git_ok("log", "-1", "--format=%h %s").stdout.strip()
                 print(f"Updated to: {commit}\n")
 
+    # ---- Select deployment scope ------------------------------------------
+    if scope is None:
+        print("Deployment scope:")
+        print("  [1] dev  - Only dev directories (utils/dev/, software/dev/, tests/)")
+        print("  [2] full - All tracked files (modifies core pipeline)")
+        choice = input("Select scope [1]: ").strip()
+        if choice in ("", "1", "dev"):
+            scope = "dev"
+        elif choice in ("2", "full"):
+            scope = "full"
+        else:
+            print(f"Invalid choice: {choice}")
+            sys.exit(1)
+
+    if scope == "full":
+        print()
+        print("WARNING: Full deployment modifies core pipeline files shared")
+        print("         by all users on the Drive.")
+        if input("Proceed with full deployment? [y/N] ").strip().lower() != "y":
+            print("Aborted. Use 'dev' scope for safer deployments.")
+            return
+
     # ---- Determine changes ------------------------------------------------
-    tracked = _get_tracked_files()
-    if not tracked:
+    tracked_all = _get_tracked_files()
+    if not tracked_all:
         print("ERROR: git ls-files returned no tracked files.")
         print("Make sure you have at least one commit in the repo.")
         sys.exit(1)
 
-    drive_files = _walk_target(target)
+    tracked = {f for f in tracked_all if _in_scope(f, scope)}
+    skipped = len(tracked_all) - len(tracked)
+    drive_files = {f for f in _walk_target(target) if _in_scope(f, scope)}
 
     to_add: list[str] = []
     to_update: list[str] = []
@@ -227,6 +305,9 @@ def main() -> None:
     print(f"  Branch : {branch}")
     print(f"  Commit : {commit}")
     print(f"  Target : {target}")
+    print(f"  Scope  : {scope}")
+    if skipped:
+        print(f"  Skipped: {skipped} file(s) outside '{scope}' scope")
     if dry_run:
         print(f"  Mode   : DRY RUN (no changes will be made)")
     print()

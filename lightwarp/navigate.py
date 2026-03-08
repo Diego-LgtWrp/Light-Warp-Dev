@@ -21,7 +21,7 @@ from lightwarp.util import open_folder
 
 def _projects_dir() -> Path:
     """Late import to avoid circular dependency at module load time."""
-    from config import PROJECTS_DIR
+    from lightwarp.config import PROJECTS_DIR
     return PROJECTS_DIR
 
 

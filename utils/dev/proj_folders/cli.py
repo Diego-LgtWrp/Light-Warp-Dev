@@ -6,10 +6,10 @@ project_root arguments accept either a full path or a bare project name
 (resolved against PROJECTS_DIR from config).
 
 Examples:
-  python -m tools.proj_folders.cli project MyFilm
-  python -m tools.proj_folders.cli asset MyFilm char_hero --blend
-  python -m tools.proj_folders.cli shot MyFilm sh010
-  python -m tools.proj_folders.cli project-update MyFilm --dry-run
+  python -m proj_folders.cli project MyFilm
+  python -m proj_folders.cli asset MyFilm char_hero --blend
+  python -m proj_folders.cli shot MyFilm sh010
+  python -m proj_folders.cli project-update MyFilm --dry-run
 """
 
 import argparse
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, List
 
-from tools.proj_folders.core import (
+from .core import (
     create_asset_structure,
     create_project,
     create_shot_structure,
