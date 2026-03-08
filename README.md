@@ -4,15 +4,17 @@ Shared Python tools, DCC integrations, and utilities for the LightWarp animation
 
 ## Drive Layout
 
-This repository (`pipeline/`) lives on the LightWarp shared drive alongside production data and resources:
+This repository (`pipeline/`) lives on the LightWarp shared drive alongside production data:
 
 ```
 LightWarp_Test/                 (Google Drive shared root)
-  projects/                     Production data (project folders created by this tool)
-  resources/                    Shared non-code assets (templates, HDRIs, LUTs)
-    templates/                  .blend, .spp template files for asset creation
-  software/                     DCC installs, portable apps, plugin builds
+  projects/                     Production data (project folders created by pipeline tools)
   pipeline/                     <-- THIS REPO (version-controlled via GitHub)
+  lib/                          Shared assets library (currently a marker directory)
+  utils/                        Standalone dev utilities (not part of this repo)
+    dev/
+      projTools/                Pipeline folder tools (standalone version)
+      SecureTransfer/           File transfer utility
 ```
 
 Pipeline code is tracked in Git and hosted on GitHub.  Production data and large binaries stay on the shared drive and are never committed.
@@ -34,24 +36,28 @@ pipeline/
       naming.py               Versioning format settings
       local.py                Per-machine overrides (gitignored)
   utils/
-    dev/                    End-user tools — source of truth (GUI + CLI)
+    dev/                    End-user tools — dev source (GUI + CLI)
       proj_folders/           Project/asset/shot folder creator
       secure_transfer/        File copy & SHA-256 validation (requires customtkinter)
+    tools/                  Published tools (populated by publish.py)
     launchers/              .bat/.ps1 scripts for artists to double-click
   software/
     dev/
-      plugins/              DCC-specific integrations (stubs for now)
+      plugins/              DCC integrations — dev source (stubs for now)
         blender/              Blender operators, menus, startup hooks
         houdini/              Shelf tools, HDAs, Python panels
         nuke/                 Gizmos, Python panels, render management
         substance/            Substance Painter plugins and export presets
         adobe/                After Effects, Photoshop, and Adobe bridges
         unreal/               Unreal Editor utilities and Python bindings
+      templates/            software template files for asset creation reference
+    plugins/                Published plugins (populated by publish.py)
+    templates/              Published templates (populated by publish.py)
   tests/                  Unit and integration tests
   setup.py                Developer install (pip install -e .)
   setup_local.py          Auto-generates lightwarp/config/local.py for local clones
   deploy.py               Deploys the repo to the Google Drive (scoped: dev or full)
-  publish.py              Promotes dev tools/plugins/templates to production on Drive
+  publish.py              Promotes dev → production (dev/ → tools/, plugins/, templates/)
 ```
 
 ## Quick Start
