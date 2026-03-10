@@ -24,6 +24,10 @@ from lightwarp.config.defaults import (
     VERSION_PADDING,
     VERSION_PREFIX,
     VERSION_SEPARATOR,
+    SEQUENCE_PREFIX,
+    SHOT_PREFIX,
+    BATCH_PADDING,
+    BATCH_INCREMENT,
 )
 
 # Auto-detect drive layout from this file's position on disk.
@@ -61,6 +65,10 @@ try:
     VERSION_PREFIX = getattr(_local, "VERSION_PREFIX", VERSION_PREFIX)
     VERSION_SEPARATOR = getattr(_local, "VERSION_SEPARATOR", VERSION_SEPARATOR)
     VERSION_PADDING = getattr(_local, "VERSION_PADDING", VERSION_PADDING)
+    SEQUENCE_PREFIX = getattr(_local, "SEQUENCE_PREFIX", SEQUENCE_PREFIX)
+    SHOT_PREFIX = getattr(_local, "SHOT_PREFIX", SHOT_PREFIX)
+    BATCH_PADDING = getattr(_local, "BATCH_PADDING", BATCH_PADDING)
+    BATCH_INCREMENT = getattr(_local, "BATCH_INCREMENT", BATCH_INCREMENT)
     del _local, _drive_override
 except ImportError:
     pass

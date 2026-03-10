@@ -75,3 +75,15 @@ TEMPLATE_MAPPINGS: Dict[str, Dict[str, str]] = {
 VERSION_PREFIX: str = "v"
 VERSION_SEPARATOR: str = "_"
 VERSION_PADDING: int = 3
+
+# ---------------------------------------------------------------------------
+# Batch / sequence naming
+#
+#   SEQUENCE_PREFIX + padded number  →  sq010, sq020
+#   SHOT_PREFIX     + padded number  →  s010, s020
+# ---------------------------------------------------------------------------
+
+SEQUENCE_PREFIX: str = "sq"
+SHOT_PREFIX: str = "s"
+BATCH_PADDING: int = 3
+BATCH_INCREMENT: int = 100

@@ -208,6 +208,7 @@ class PipelineFoldersGui:
         '''
 
         ctk.CTkButton(asset_frame, text="Create Asset", command=self._create_asset).pack(anchor="w", pady=5)
+        ctk.CTkButton(asset_frame, text="Batch Asset Setup", command=self._open_batch_assets).pack(anchor="w", pady=5)
         ctk.CTkButton(asset_frame, text="Open Asset Folder", command=self._open_asset_folder).pack(anchor="w", pady=5)
 
         self.separator()
@@ -231,7 +232,7 @@ class PipelineFoldersGui:
         self.shot_name_var.pack(fill="x", pady=5)
 
         ctk.CTkButton(shot_frame, text="Create Shot", command=self._create_shot).pack(anchor="w", pady=5)
-        ctk.CTkButton(shot_frame, text="Bulk Shot Setup", command=lambda: open_bulk_shot(self.root)).pack(anchor="w", pady=5)
+        ctk.CTkButton(shot_frame, text="Batch Shot Setup", command=self._open_batch_shots).pack(anchor="w", pady=5)
         ctk.CTkButton(shot_frame, text="Open Shot Folder", command=self._open_shot_folder).pack(anchor="w", pady=5)
 
         self.separator()
@@ -358,6 +359,30 @@ class PipelineFoldersGui:
             return
 
         self._open_in_browser(path)
+
+    #Batch dialog openers
+    # --------------------------------------------------
+    def _get_shot_project_root(self) -> Path:
+        return Path(self.root_var.get()) / self.shot_project_var.get()
+
+    def _get_asset_project_root(self) -> Path:
+        return Path(self.root_var.get()) / self.asset_project_var.get()
+
+    def _open_batch_shots(self):
+        open_bulk_shot(
+            self.root,
+            project_root=self._get_shot_project_root(),
+            log_callback=self.append_log,
+            mode="shots",
+        )
+
+    def _open_batch_assets(self):
+        open_bulk_shot(
+            self.root,
+            project_root=self._get_asset_project_root(),
+            log_callback=self.append_log,
+            mode="assets",
+        )
 
     #Shot functions
     # --------------------------------------------------
