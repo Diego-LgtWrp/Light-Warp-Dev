@@ -1,5 +1,5 @@
 """
-Pipeline-wide configuration — structures, templates, asset types.
+Pipeline-wide configuration — structures, templates, asset types, paths.
 
 All overridable constants are collected here.  Per-machine overrides
 are loaded from lightwarp/config/local.py (gitignored; see local.py.example).
@@ -12,23 +12,29 @@ Usage:
     from lightwarp.config import PROJECT_STRUCTURE, ASSET_TYPES, PROJECTS_DIR
 """
 
-from lightwarp import env as _env
+from pathlib import Path
 
-from lightwarp.config.structures import (
+from lightwarp.config.defaults import (
     PROJECT_STRUCTURE,
     ASSET_STRUCTURE,
     SHOT_STRUCTURE,
     RENDER_STRUCTURE,
     ASSET_TYPES,
+    TEMPLATE_MAPPINGS,
+    VERSION_PADDING,
+    VERSION_PREFIX,
+    VERSION_SEPARATOR,
 )
-from lightwarp.config.templates import TEMPLATE_MAPPINGS
-from lightwarp.config.naming import VERSION_PADDING, VERSION_PREFIX, VERSION_SEPARATOR
 
-DRIVE_ROOT = _env.DRIVE_ROOT
-PROJECTS_DIR = _env.PROJECTS_DIR
-LIB_DIR = _env.LIB_DIR
-SOFTWARE_DIR = _env.SOFTWARE_DIR
-TEMPLATES_DIR = _env.TEMPLATES_DIR
+# Auto-detect drive layout from this file's position on disk.
+# <DRIVE_ROOT>/pipeline/lightwarp/config/__init__.py
+_PIPELINE_ROOT = Path(__file__).resolve().parents[2]
+
+DRIVE_ROOT = _PIPELINE_ROOT.parent
+PROJECTS_DIR = DRIVE_ROOT / "projects"
+LIB_DIR = DRIVE_ROOT / "lib"
+SOFTWARE_DIR = _PIPELINE_ROOT / "software"
+TEMPLATES_DIR = SOFTWARE_DIR / "templates"
 
 try:
     from lightwarp.config import local as _local  # type: ignore[attr-defined]

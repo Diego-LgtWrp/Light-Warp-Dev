@@ -234,9 +234,9 @@ lw.open_shot("MyFilm", "sh010")
 
 | What | Module |
 |------|--------|
-| Path auto-detection | `lightwarp.env` |
+| Configuration and paths | `lightwarp.config` |
 | Folder-spec engine | `lightwarp.folders` |
-| Project setup functions | `lightwarp.setup` |
+| Project setup functions | `lightwarp.project` |
 | Navigation and listing | `lightwarp.navigate` |
 | File versioning | `lightwarp.naming` |
 | Utilities (logging, open) | `lightwarp.util` |

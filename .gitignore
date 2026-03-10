@@ -10,6 +10,10 @@ build/
 # Per-machine config (each artist creates their own)
 lightwarp/config/local.py
 
+# Auth credential data (passwords / usernames are per-deployment)
+utils/dev/proj_folders/auth/authname/*.dat
+utils/dev/proj_folders/auth/authname/*.data
+
 # IDE / editor
 .vscode/
 .idea/

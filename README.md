@@ -24,16 +24,13 @@ Pipeline code is tracked in Git and hosted on GitHub.  Production data and large
 ```
 pipeline/
   lightwarp/              Core studio library  (import lightwarp as lw)
-    env.py                  Auto-detected drive paths
     folders.py              Generic folder-spec engine
-    setup.py                Project/asset/shot creation and updates
+    project.py              Project/asset/shot creation and updates
     navigate.py             Path resolution, listing, and open-in-browser
     naming.py               File versioning engine (v001, v002, ...)
     util.py                 Cross-platform helpers (logging, open_folder)
-    config/                 Pipeline-wide settings
-      structures.py           Folder structures + asset types
-      templates.py            Template path mappings per DCC
-      naming.py               Versioning format settings
+    config/                 Pipeline-wide settings and path detection
+      defaults.py             Folder structures, templates, naming conventions
       local.py                Per-machine overrides (gitignored)
   utils/
     dev/                    End-user tools — dev source (GUI + CLI)

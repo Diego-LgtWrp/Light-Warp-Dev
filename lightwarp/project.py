@@ -2,10 +2,6 @@
 Project structure builders — create, update, and preview
 project / asset / shot directory trees.
 
-This module is the canonical home for pipeline structure operations.
-``utils/dev/proj_folders/core.py`` re-exports from here for backward
-compatibility with the CLI and GUI entry points.
-
 Usage::
 
     import lightwarp as lw

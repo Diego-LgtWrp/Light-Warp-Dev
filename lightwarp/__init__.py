@@ -33,8 +33,6 @@ __version__ = "0.1.0"
 
 # ---------------------------------------------------------------------------
 # Environment paths — imported from config so local.py overrides are applied.
-# lightwarp/config/__init__.py imports from lightwarp.env (a submodule), so
-# there is no circular dependency.
 # ---------------------------------------------------------------------------
 from lightwarp.config import (  # noqa: F401 — re-export
     DRIVE_ROOT,
@@ -65,7 +63,7 @@ from lightwarp.util import log_to_project, open_folder  # noqa: F401
 # ---------------------------------------------------------------------------
 # Project setup (create / update / preview)
 # ---------------------------------------------------------------------------
-from lightwarp.setup import (  # noqa: F401 — re-export
+from lightwarp.project import (  # noqa: F401 — re-export
     create_asset_structure,
     create_project,
     create_project_structure,

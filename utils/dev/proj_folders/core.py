@@ -1,11 +1,11 @@
 """
-Backward-compatible re-export shim.
+Re-export shim — all logic lives in ``lightwarp.project``.
 
-All logic now lives in ``lightwarp.setup``.  The CLI and GUI import from
-this module, so we re-export every public name to keep them working.
+The CLI and GUI import from this module so they don't need to know
+the full lightwarp path.
 """
 
-from lightwarp.setup import (  # noqa: F401 — re-export
+from lightwarp.project import (  # noqa: F401 — re-export
     TOOL_NAME,
     create_asset_structure,
     create_project,
